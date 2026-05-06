@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: #f7f7f7;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 24px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        textarea, input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            margin-bottom: 16px;
+            font-size: 15px;
+        }
+
+        button {
+            padding: 12px 18px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        pre {
+            white-space: pre-wrap;
+            background: #111827;
+            color: #f9fafb;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .hint {
+            color: #555;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Kubernetes AI Agent</h1>
+
+    <p class="hint">
+        Enter a Kubernetes issue. The agent will analyze mock kubectl output and suggest next steps.
+    </p>
+
+    <label>Namespace</label>
+    <input id="namespace" value="k8s-learning" />
+
+    <label>Issue</label>
+    <textarea id="issue" rows="5">backend pod is CrashLoopBackOff</textarea>
+
+    <button id="analyze-button" onclick="analyzeIssue()">Analyze Issue</button>
+
+    <pre id="result">Result will appear here...</pre>
+</div>
+
+<script>
+async function analyzeIssue() {
+    const issue = document.getElementById("issue").value;
+    const namespace = document.getElementById("namespace").value;
+    const result = document.getElementById("result");
+    const button = document.getElementById("analyze-button");
+
+    result.textContent = "Analyzing...";
+    button.disabled = true;
+
+    try {
+        const response = await fetch("/analyze", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                issue: issue,
+                namespace: namespace,
+            }),
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.detail || "Analysis failed");
+        }
+
+        result.textContent = data.analysis;
+    } catch (error) {
+        result.textContent = "Error: " + error.message;
+    } finally {
+        button.disabled = false;
+    }
+}
+</script>
+</body>
+</html>
