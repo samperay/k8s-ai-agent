@@ -27,6 +27,7 @@ def collect_kubernetes_context(issue: str, namespace: str) -> str:
         events = mock_tools.get_events(namespace)
         describe = mock_tools.describe_pod(namespace)
         logs = mock_tools.get_logs(namespace)
+        ImagePullBackOff = mock_tools.get_ImagePullBackOff(namespace)
     else:
         pods = kubectl_tools.get_pods(namespace)
         events = kubectl_tools.get_events(namespace)
@@ -55,7 +56,7 @@ kubectl logs:
 {logs}
 """
 
-
+# main.py(UI) calls this function
 def analyze_kubernetes_issue(issue: str, namespace: str) -> str:
     try:
         context = collect_kubernetes_context(issue, namespace)

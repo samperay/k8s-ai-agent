@@ -39,3 +39,9 @@ LAST SEEN   TYPE      REASON    OBJECT                              MESSAGE
 10m         Warning   BackOff   pod/backend-bf5894f7-d4knx          Back-off restarting failed container backend
 8m          Normal    Pulled    pod/backend-bf5894f7-d4knx          Successfully pulled image
 """
+
+def get_ImagePullBackOff(namespace: str, pod_name: str = "backend-bf5894f7-d4knx") -> str:
+  return f"""
+NAME       READY   STATUS             RESTARTS   AGE
+backend-bf5894f7-d4knx   0/1     ImagePullBackOff   0          1m5s
+"""
